@@ -62,7 +62,7 @@
   "bugs": {
     "url": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs/issues"
   },
-  "homepage": "https://trash.fjordcleanup.org",
+  "homepage": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs",
   "author": "Markus Tacker <m@coderbyheart.com> | https://coderbyheart.com",
   "license": "MIT",
   "scripts": {
