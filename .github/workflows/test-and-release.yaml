@@ -1,0 +1,76 @@
+name: Test and Release
+
+on:
+  push:
+    branches:
+      - saga
+  pull_request:
+
+permissions:
+  contents: write
+  actions: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  VERSION: ${{ github.sha }}
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Compile TypeScript
+        run: npx tsc
+
+      - name: Check source code with eslint
+        run: npx eslint ./
+
+      - name: Check if source code is properly formatted
+        run: npx prettier -c ./
+
+      - name: Cache DynamoDB (local)
+        id: cache-dynamodb-local
+        uses: actions/cache@v4
+        with:
+          path: dynamodb_local_latest
+          key: dynamodb-local-${{ runner.os }}-3.0.0
+
+      - name: Install DynamoDB (local)
+        if: steps.cache-dynamodb-local.outputs.cache-hit != 'true'
+        run: |
+          wget https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_latest.zip
+          unzip dynamodb_local_latest.zip -d ./dynamodb_local_latest
+
+      - name: Run DynamoDB (local)
+        run: |
+          java -Djava.library.path=./dynamodb_local_latest/DynamoDBLocal_lib -jar ./dynamodb_local_latest/DynamoDBLocal.jar -sharedDb -inMemory &
+
+      - name: Run tests
+        run: npm test
+
+      - name: Export to-be released version
+        run: |
+          npx semantic-release --dry-run > semantic-release.out
+          echo "RELEASE_VERSION=$(cat semantic-release.out | grep -i 'The next release version is' | awk '{print $11}')" >> $GITHUB_ENV
+          cat semantic-release.out
+
+      - name: Semantic release
+        if: env.RELEASE_VERSION !=  ''
+        id: semantic-release
+        run: npx semantic-release

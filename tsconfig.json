@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "verbatimModuleSyntax": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "allowImportingTsExtensions": true,
+    "customConditions": ["aws-dynamodb-es-cqrs-dev"],
+    "baseUrl": ".",
+    "paths": {
+      "#aggregate/*": ["aggregate/*"],
+      "#event/*": ["event/*"],
+      "#persistence/*": ["persistence/*"],
+      "#error/*": ["error/*"]
+    }
+  },
+  "include": [
+    "aggregate/**/*",
+    "event/**/*",
+    "error/**/*",
+    "persistence/**/*",
+    ".npm/**/*",
+    "test/**/*"
+  ]
+}
