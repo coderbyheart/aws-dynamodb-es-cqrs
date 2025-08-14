@@ -29,6 +29,32 @@
       }
     }
   },
+  "exports": {
+    "./aggregate/*": {
+      "import": {
+        "types": "./npm/aggregate/*.d.ts",
+        "default": "./npm/aggregate/*.js"
+      }
+    },
+    "./event/*": {
+      "import": {
+        "types": "./npm/event/*.d.ts",
+        "default": "./npm/event/*.js"
+      }
+    },
+    "./error/*": {
+      "import": {
+        "types": "./npm/error/*.d.ts",
+        "default": "./npm/error/*.js"
+      }
+    },
+    "./persistence/*": {
+      "import": {
+        "types": "./npm/persistence/*.d.ts",
+        "default": "./npm/persistence/*.js"
+      }
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/coderbyheart/aws-dynamodb-es-cqrs.git"
