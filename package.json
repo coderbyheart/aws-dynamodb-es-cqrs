@@ -30,28 +30,28 @@
     }
   },
   "exports": {
-    "./aggregate/*": {
+    "./aggregate": {
       "import": {
-        "types": "./npm/aggregate/*.d.ts",
-        "default": "./npm/aggregate/*.js"
+        "types": "./npm/aggregate/export.d.ts",
+        "default": "./npm/aggregate/export.js"
       }
     },
-    "./event/*": {
+    "./event": {
       "import": {
-        "types": "./npm/event/*.d.ts",
-        "default": "./npm/event/*.js"
+        "types": "./npm/event/export.d.ts",
+        "default": "./npm/event/export.js"
       }
     },
-    "./error/*": {
+    "./error": {
       "import": {
-        "types": "./npm/error/*.d.ts",
-        "default": "./npm/error/*.js"
+        "types": "./npm/error/export.d.ts",
+        "default": "./npm/error/export.js"
       }
     },
-    "./persistence/*": {
+    "./persistence": {
       "import": {
-        "types": "./npm/persistence/*.d.ts",
-        "default": "./npm/persistence/*.js"
+        "types": "./npm/persistence/export.d.ts",
+        "default": "./npm/persistence/export.js"
       }
     }
   },
