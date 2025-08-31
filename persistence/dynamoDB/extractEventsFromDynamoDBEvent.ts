@@ -6,17 +6,17 @@ import type { DynamoDBStreamEvent } from 'aws-lambda'
 /**
  * Parses a DynamoDB stream event and extracts the events from it.
  */
-export const extractEventsFromDynamoDBEvent = (
+export const extractEventsFromDynamoDBEvent = <Event extends AggregateEvent>(
 	event: DynamoDBStreamEvent,
-): Array<AggregateEvent> => {
+): Array<Event> => {
 	const { Records } = event
-	const events: Array<AggregateEvent> = []
+	const events: Array<Event> = []
 	for (const { dynamodb } of Records) {
 		if (dynamodb?.NewImage === undefined) continue
 		events.push(
 			unmarshall(
 				dynamodb.NewImage as { [key: string]: AttributeValue },
-			) as AggregateEvent,
+			) as Event,
 		)
 	}
 	return events
