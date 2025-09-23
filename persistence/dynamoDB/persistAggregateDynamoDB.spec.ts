@@ -1,11 +1,12 @@
 import type { AggregateEvent, ULID } from '#event/AggregateEvent.ts'
+import { RemoveAttribute } from '#persistence/PersistAggregateFn.ts'
 import type { UpdateItemCommandInput } from '@aws-sdk/client-dynamodb'
 import { randomUUID } from 'crypto'
 import assert from 'node:assert/strict'
 import { describe, it, mock } from 'node:test'
 import { ulid } from 'ulidx'
 import { fromEvent } from '../../aggregate/AggregateMeta.ts'
-import { v, v1 } from '../../aggregate/AggregateVersion.ts'
+import { inc, v, v1 } from '../../aggregate/AggregateVersion.ts'
 import { persistAggregateDynamoDB } from './persistAggregateDynamoDB.ts'
 
 void describe('persistAggregateDynamoDB()', () => {
@@ -98,6 +99,45 @@ void describe('persistAggregateDynamoDB()', () => {
 			UpdateExpression:
 				'SET #version = :version, #actorId = :actorId, #some = :some',
 		})
+	})
+
+	void it('should remove fields from an updated aggregate when they should be removed', async () => {
+		const sendMock =
+			mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
+
+		const persist = persistAggregateDynamoDB(
+			{
+				send: sendMock,
+			} as any,
+			'test-aggregates-table',
+		)
+
+		const id = ulid() as ULID
+		const actor = `some-actor:${randomUUID()}`
+		const event: AggregateEvent = {
+			eventId: ulid() as ULID,
+			eventName: 'SomeEvent',
+			aggregateName: 'SomeAggregate',
+			aggregateId: id,
+			aggregateVersion: inc(v1),
+			actorId: actor,
+		}
+
+		await persist({
+			$meta: fromEvent(event),
+			removeThis: RemoveAttribute,
+		})
+
+		const {
+			ExpressionAttributeValues,
+			ExpressionAttributeNames,
+			UpdateExpression,
+		} = sendMock.mock.calls[0]!.arguments[0].input
+		assert.equal(ExpressionAttributeValues?.[':removeThis'], undefined)
+		assert.partialDeepStrictEqual(ExpressionAttributeNames, {
+			'#removeThis': 'removeThis',
+		})
+		assert.ok(UpdateExpression?.includes('REMOVE #removeThis') === true)
 	})
 
 	void it('should persist an updated aggregate', async () => {

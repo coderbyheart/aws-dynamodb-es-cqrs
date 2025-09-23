@@ -1,4 +1,5 @@
 import type { AggregateMeta } from '#aggregate/AggregateMeta.ts'
+import { RemoveAttribute } from '#persistence/PersistAggregateFn.ts'
 import { type UpdateItemCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
 
@@ -44,16 +45,31 @@ export const toUpdate = (
 		updates.set('updatedAt', updatedAt!.toISOString())
 	}
 
+	let UpdateExpression = `SET ${Array.from(updates.entries())
+		.filter(([, v]) => v !== RemoveAttribute)
+		.map(([k]) => `#${k} = :${k}`)
+		.join(', ')}`
+	const fieldsToRemove = Array.from(updates.entries())
+		.filter(([, v]) => v === RemoveAttribute)
+		.map(([k]) => k)
+	if (fieldsToRemove.length > 0) {
+		UpdateExpression += ` REMOVE ${fieldsToRemove
+			.map((f) => `#${f}`)
+			.join(', ')}`
+	}
+
 	return {
 		...updateArgs,
 		ExpressionAttributeValues: {
 			...Object.fromEntries(
-				Array.from(updates.entries()).map(([k, v]) => [
-					`:${k}`,
-					marshall(v, {
-						convertTopLevelContainer: true,
-					}),
-				]),
+				Array.from(updates.entries())
+					.filter(([, v]) => v !== RemoveAttribute)
+					.map(([k, v]) => [
+						`:${k}`,
+						marshall(v, {
+							convertTopLevelContainer: true,
+						}),
+					]),
 			),
 			...(version !== 1 ? marshall({ ':prevVersion': version - 1 }) : {}),
 		},
@@ -64,8 +80,6 @@ export const toUpdate = (
 			),
 			...(version !== 1 ? { '#version': 'version' } : {}),
 		},
-		UpdateExpression: `SET ${Array.from(updates.keys())
-			.map((f) => `#${f} = :${f}`)
-			.join(', ')}`,
+		UpdateExpression,
 	}
 }
