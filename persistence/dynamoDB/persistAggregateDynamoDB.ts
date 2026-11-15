@@ -1,4 +1,4 @@
-import type { PersistAggregateFn } from "#persistence/PersistAggregateFn.ts"
+import type { PersistAggregateFn } from "../PersistAggregateFn.ts"
 import { UpdateItemCommand, type DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import type { PersistedAggregate } from "./PersistedAggregate.ts"
 import { toUpdate } from "./toUpdate.ts"

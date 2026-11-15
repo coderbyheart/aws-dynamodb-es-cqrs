@@ -1,4 +1,4 @@
-import type { AggregateEvent } from "#event/AggregateEvent.ts"
+import type { AggregateEvent } from "../../event/AggregateEvent.ts"
 import type { AttributeValue } from "@aws-sdk/client-dynamodb"
 import { unmarshall } from "@aws-sdk/util-dynamodb"
 import type { DynamoDBStreamEvent } from "aws-lambda"

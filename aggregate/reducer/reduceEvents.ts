@@ -1,4 +1,4 @@
-import type { AggregateEvent } from "#event/AggregateEvent.ts"
+import type { AggregateEvent } from "../../event/AggregateEvent.ts"
 import type { AggregateMeta } from "../AggregateMeta.ts"
 import type { ApplyEventFn, ApplyEventsFn } from "./ApplyEventsFn.ts"
 
