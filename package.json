@@ -82,7 +82,7 @@
     "@aws-sdk/util-dynamodb": "3.996.9",
     "@babel/plugin-syntax-import-assertions": "7.29.7",
     "@bifravst/cloudformation-helpers": "10.0.3",
-    "@coderbyheart/oxlint-config": "1.0.0",
+    "@coderbyheart/oxlint-config": "1.0.1",
     "@commitlint/config-conventional": "21.2.4",
     "@swc/core": "1.16.22",
     "@types/aws-lambda": "8.10.164",
