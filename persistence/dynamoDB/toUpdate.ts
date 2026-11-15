@@ -1,5 +1,5 @@
-import type { AggregateMeta } from "#aggregate/AggregateMeta.ts"
-import { RemoveAttribute } from "#persistence/PersistAggregateFn.ts"
+import type { AggregateMeta } from "../../aggregate/AggregateMeta.ts"
+import { RemoveAttribute } from "../PersistAggregateFn.ts"
 import { type UpdateItemCommandInput } from "@aws-sdk/client-dynamodb"
 import { marshall } from "@aws-sdk/util-dynamodb"
 

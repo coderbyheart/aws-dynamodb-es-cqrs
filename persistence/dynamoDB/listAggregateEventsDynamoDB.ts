@@ -1,4 +1,4 @@
-import type { AggregateEvent } from "#event/AggregateEvent.ts"
+import type { AggregateEvent } from "../../event/AggregateEvent.ts"
 import { type DynamoDBClient, paginateQuery } from "@aws-sdk/client-dynamodb"
 import { unmarshall } from "@aws-sdk/util-dynamodb"
 import type { ListAggregateEventsFn } from "../ListAggregateEventsFn.ts"
