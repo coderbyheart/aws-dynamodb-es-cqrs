@@ -1,14 +1,14 @@
-import { marshall } from "@aws-sdk/util-dynamodb";
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
-import { ulid } from "ulidx";
-import { testActor } from "../../test/testActor.ts";
-import { unmarshallAggregate } from "./unmarshallAggregate.ts";
+import { marshall } from "@aws-sdk/util-dynamodb"
+import assert from "node:assert/strict"
+import { describe, it } from "node:test"
+import { ulid } from "ulidx"
+import { testActor } from "../../test/testActor.ts"
+import { unmarshallAggregate } from "./unmarshallAggregate.ts"
 
 void describe("unmarshallAggregate()", () => {
   void it("should create $meta and keep other attributes", () => {
-    const id = ulid();
-    const actorId = testActor();
+    const id = ulid()
+    const actorId = testActor()
 
     const persisted = {
       aggregateId: id,
@@ -16,9 +16,9 @@ void describe("unmarshallAggregate()", () => {
       actorId,
       foo: "bar",
       count: 42,
-    };
+    }
 
-    const result = unmarshallAggregate(marshall(persisted));
+    const result = unmarshallAggregate(marshall(persisted))
 
     assert.deepEqual(result, {
       $meta: {
@@ -28,13 +28,13 @@ void describe("unmarshallAggregate()", () => {
       },
       foo: "bar",
       count: 42,
-    });
-  });
+    })
+  })
 
   void it("should include updatedAt in $meta when it is present", () => {
-    const id = ulid();
-    const updatedAt = "2024-01-02T03:04:05.678Z";
-    const actorId = testActor();
+    const id = ulid()
+    const updatedAt = "2024-01-02T03:04:05.678Z"
+    const actorId = testActor()
 
     const persisted = {
       aggregateId: id,
@@ -44,9 +44,9 @@ void describe("unmarshallAggregate()", () => {
       authorId: testActor(),
       foo: "bar",
       count: 42,
-    };
+    }
 
-    const result = unmarshallAggregate(marshall(persisted));
+    const result = unmarshallAggregate(marshall(persisted))
 
     assert.deepEqual(result, {
       $meta: {
@@ -58,6 +58,6 @@ void describe("unmarshallAggregate()", () => {
       authorId: persisted.authorId,
       foo: "bar",
       count: 42,
-    });
-  });
-});
+    })
+  })
+})

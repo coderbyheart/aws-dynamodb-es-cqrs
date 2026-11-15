@@ -1,15 +1,15 @@
-import { inc, type AggregateVersion } from "#aggregate/AggregateVersion.ts";
-import { ConflictError } from "#error/ConflictError.ts";
-import { NotFoundError } from "#error/NotFoundError.ts";
-import type { ULID } from "#event/AggregateEvent.ts";
-import { ulid } from "ulidx";
-import { AggregateNames } from "../aggregate/AggregateNames.ts";
-import type { BlogPostAggregate } from "../aggregate/BlogPostAggregate.ts";
-import { blogpostReducer } from "../aggregate/blogPostReducer.ts";
-import { EventNames } from "../event/EventNames.ts";
-import type { FindBlogPostByIdFn } from "../persistence/FindBlogPostByIdFn.ts";
-import type { PersistBlogPostFn } from "../persistence/PersistBlogPostFn.ts";
-import type { BlogPostTitleChangedEvent } from "../event/BlogPostTitleChangedEvent.ts";
+import { inc, type AggregateVersion } from "#aggregate/AggregateVersion.ts"
+import { ConflictError } from "#error/ConflictError.ts"
+import { NotFoundError } from "#error/NotFoundError.ts"
+import type { ULID } from "#event/AggregateEvent.ts"
+import { ulid } from "ulidx"
+import { AggregateNames } from "../aggregate/AggregateNames.ts"
+import type { BlogPostAggregate } from "../aggregate/BlogPostAggregate.ts"
+import { blogpostReducer } from "../aggregate/blogPostReducer.ts"
+import { EventNames } from "../event/EventNames.ts"
+import type { FindBlogPostByIdFn } from "../persistence/FindBlogPostByIdFn.ts"
+import type { PersistBlogPostFn } from "../persistence/PersistBlogPostFn.ts"
+import type { BlogPostTitleChangedEvent } from "../event/BlogPostTitleChangedEvent.ts"
 
 export const updateBlogPostTitleCommand =
   (findBlogPostById: FindBlogPostByIdFn, persistBlogPost: PersistBlogPostFn) =>
@@ -19,14 +19,14 @@ export const updateBlogPostTitleCommand =
     version: AggregateVersion,
     actorId: string,
   ): Promise<BlogPostAggregate> => {
-    const maybeBlogPost = await findBlogPostById(blogpostId);
+    const maybeBlogPost = await findBlogPostById(blogpostId)
     if (maybeBlogPost === null) {
-      throw new NotFoundError(`BlogPost ${blogpostId} not found!`);
+      throw new NotFoundError(`BlogPost ${blogpostId} not found!`)
     }
     if (maybeBlogPost.$meta.version !== version) {
       throw new ConflictError(
         `BlogPost ${blogpostId} version mismatch! Expected ${version}, got ${maybeBlogPost.$meta.version}`,
-      );
+      )
     }
 
     const event: BlogPostTitleChangedEvent = {
@@ -37,11 +37,11 @@ export const updateBlogPostTitleCommand =
       aggregateVersion: inc(maybeBlogPost.$meta.version),
       title,
       actorId,
-    };
+    }
 
-    const applied = blogpostReducer([event], maybeBlogPost);
+    const applied = blogpostReducer([event], maybeBlogPost)
 
-    await persistBlogPost(applied, event);
+    await persistBlogPost(applied, event)
 
-    return applied;
-  };
+    return applied
+  }

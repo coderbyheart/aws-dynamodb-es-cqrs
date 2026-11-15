@@ -2,12 +2,12 @@ import {
   TransactionCanceledException,
   TransactWriteItemsCommand,
   type DynamoDBClient,
-} from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
-import { decodeTime } from "ulidx";
-import type { PersistFn } from "../PersistFn.ts";
-import type { PersistedAggregate } from "./PersistedAggregate.ts";
-import { toUpdate } from "./toUpdate.ts";
+} from "@aws-sdk/client-dynamodb"
+import { marshall } from "@aws-sdk/util-dynamodb"
+import { decodeTime } from "ulidx"
+import type { PersistFn } from "../PersistFn.ts"
+import type { PersistedAggregate } from "./PersistedAggregate.ts"
+import { toUpdate } from "./toUpdate.ts"
 
 /**
  * Generic function to persist an aggregate and the change event to DynamoDB.
@@ -47,21 +47,21 @@ export const persistDynamoDB =
             },
           ],
         }),
-      );
+      )
     } catch (err) {
       if (err instanceof TransactionCanceledException) {
         if (err.CancellationReasons?.[0]?.Code === "ConditionalCheckFailed") {
           throw new Error(`Failed to persist "${aggregate.$meta.id}" due to version conflict!`, {
             cause: err,
-          });
+          })
         }
         if (err.CancellationReasons?.[0]?.Code === "DuplicateItem") {
           throw new Error(`Failed to persist "${aggregate.$meta.id}" due to duplicate item!`, {
             cause: err,
-          });
+          })
         }
       }
-      throw err;
+      throw err
     }
-    return true;
-  };
+    return true
+  }

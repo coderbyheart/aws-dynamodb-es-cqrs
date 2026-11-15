@@ -1,27 +1,27 @@
-import type { AggregateEvent, ULID } from "#event/AggregateEvent.ts";
-import { RemoveAttribute } from "#persistence/PersistAggregateFn.ts";
-import type { UpdateItemCommandInput } from "@aws-sdk/client-dynamodb";
-import { randomUUID } from "crypto";
-import assert from "node:assert/strict";
-import { describe, it, mock } from "node:test";
-import { ulid } from "ulidx";
-import { fromEvent } from "../../aggregate/AggregateMeta.ts";
-import { inc, v, v1 } from "../../aggregate/AggregateVersion.ts";
-import { persistAggregateDynamoDB } from "./persistAggregateDynamoDB.ts";
+import type { AggregateEvent, ULID } from "#event/AggregateEvent.ts"
+import { RemoveAttribute } from "#persistence/PersistAggregateFn.ts"
+import type { UpdateItemCommandInput } from "@aws-sdk/client-dynamodb"
+import { randomUUID } from "crypto"
+import assert from "node:assert/strict"
+import { describe, it, mock } from "node:test"
+import { ulid } from "ulidx"
+import { fromEvent } from "../../aggregate/AggregateMeta.ts"
+import { inc, v, v1 } from "../../aggregate/AggregateVersion.ts"
+import { persistAggregateDynamoDB } from "./persistAggregateDynamoDB.ts"
 
 void describe("persistAggregateDynamoDB()", () => {
   void it("should persist a new aggregate", async () => {
-    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>();
+    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
 
     const persist = persistAggregateDynamoDB(
       {
         send: sendMock,
       } as any,
       "test-aggregates-table",
-    );
+    )
 
-    const id = ulid() as ULID;
-    const actor = `some-actor:${randomUUID()}`;
+    const id = ulid() as ULID
+    const actor = `some-actor:${randomUUID()}`
     const event: AggregateEvent = {
       eventId: ulid() as ULID,
       eventName: "SomeEvent",
@@ -29,11 +29,11 @@ void describe("persistAggregateDynamoDB()", () => {
       aggregateId: id,
       aggregateVersion: v1,
       actorId: actor,
-    };
+    }
 
     await persist({
       $meta: fromEvent(event),
-    });
+    })
 
     assert.deepEqual(sendMock.mock.calls[0]!.arguments[0].input, {
       TableName: "test-aggregates-table",
@@ -49,21 +49,21 @@ void describe("persistAggregateDynamoDB()", () => {
       },
       ConditionExpression: "attribute_not_exists(#aggregateId)",
       UpdateExpression: "SET #version = :version, #actorId = :actorId",
-    });
-  });
+    })
+  })
 
   void it("should persist a new aggregate with additional properties", async () => {
-    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>();
+    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
 
     const persist = persistAggregateDynamoDB(
       {
         send: sendMock,
       } as any,
       "test-aggregates-table",
-    );
+    )
 
-    const id = ulid() as ULID;
-    const actor = `some-actor:${randomUUID()}`;
+    const id = ulid() as ULID
+    const actor = `some-actor:${randomUUID()}`
     const event: AggregateEvent = {
       eventId: ulid() as ULID,
       eventName: "SomeEvent",
@@ -71,11 +71,11 @@ void describe("persistAggregateDynamoDB()", () => {
       aggregateId: id,
       aggregateVersion: v1,
       actorId: actor,
-    };
+    }
     await persist({
       $meta: fromEvent(event),
       some: "payload",
-    });
+    })
 
     assert.deepEqual(sendMock.mock.calls[0]!.arguments[0].input, {
       TableName: "test-aggregates-table",
@@ -95,21 +95,21 @@ void describe("persistAggregateDynamoDB()", () => {
       },
       ConditionExpression: "attribute_not_exists(#aggregateId)",
       UpdateExpression: "SET #version = :version, #actorId = :actorId, #some = :some",
-    });
-  });
+    })
+  })
 
   void it("should remove fields from an updated aggregate when they should be removed", async () => {
-    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>();
+    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
 
     const persist = persistAggregateDynamoDB(
       {
         send: sendMock,
       } as any,
       "test-aggregates-table",
-    );
+    )
 
-    const id = ulid() as ULID;
-    const actor = `some-actor:${randomUUID()}`;
+    const id = ulid() as ULID
+    const actor = `some-actor:${randomUUID()}`
     const event: AggregateEvent = {
       eventId: ulid() as ULID,
       eventName: "SomeEvent",
@@ -117,35 +117,35 @@ void describe("persistAggregateDynamoDB()", () => {
       aggregateId: id,
       aggregateVersion: inc(v1),
       actorId: actor,
-    };
+    }
 
     await persist({
       $meta: fromEvent(event),
       removeThis: RemoveAttribute,
-    });
+    })
 
     const { ExpressionAttributeValues, ExpressionAttributeNames, UpdateExpression } =
-      sendMock.mock.calls[0]!.arguments[0].input;
-    assert.equal(ExpressionAttributeValues?.[":removeThis"], undefined);
+      sendMock.mock.calls[0]!.arguments[0].input
+    assert.equal(ExpressionAttributeValues?.[":removeThis"], undefined)
     assert.partialDeepStrictEqual(ExpressionAttributeNames, {
       "#removeThis": "removeThis",
-    });
-    assert.ok(UpdateExpression?.includes("REMOVE #removeThis") === true);
-  });
+    })
+    assert.ok(UpdateExpression?.includes("REMOVE #removeThis") === true)
+  })
 
   void it("should persist an updated aggregate", async () => {
-    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>();
+    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
 
     const persist = persistAggregateDynamoDB(
       {
         send: sendMock,
       } as any,
       "test-aggregates-table",
-    );
+    )
 
-    const id = ulid() as ULID;
-    const updatedAt = new Date();
-    const actor = `some-actor:${randomUUID()}`;
+    const id = ulid() as ULID
+    const updatedAt = new Date()
+    const actor = `some-actor:${randomUUID()}`
 
     await persist({
       $meta: {
@@ -154,7 +154,7 @@ void describe("persistAggregateDynamoDB()", () => {
         actorId: actor,
         updatedAt,
       },
-    });
+    })
 
     const {
       TableName,
@@ -163,9 +163,9 @@ void describe("persistAggregateDynamoDB()", () => {
       ExpressionAttributeNames,
       ConditionExpression,
       UpdateExpression,
-    } = sendMock.mock.calls[0]!.arguments[0].input;
-    assert.deepEqual(TableName, "test-aggregates-table");
-    assert.deepEqual(Key, { aggregateId: { S: id } });
+    } = sendMock.mock.calls[0]!.arguments[0].input
+    assert.deepEqual(TableName, "test-aggregates-table")
+    assert.deepEqual(Key, { aggregateId: { S: id } })
     assert.deepEqual(ExpressionAttributeValues, {
       ":version": { N: "2" },
       ":actorId": { S: actor },
@@ -175,36 +175,36 @@ void describe("persistAggregateDynamoDB()", () => {
       ":updatedAt": {
         S: updatedAt.toISOString(),
       },
-    });
+    })
     assert.deepEqual(ExpressionAttributeNames, {
       "#aggregateId": "aggregateId",
       "#version": "version",
       "#actorId": "actorId",
       "#updatedAt": "updatedAt",
-    });
+    })
     assert.deepEqual(
       ConditionExpression,
       "attribute_exists(#aggregateId) AND #version = :prevVersion",
-    );
+    )
     assert.deepEqual(
       UpdateExpression,
       "SET #version = :version, #actorId = :actorId, #updatedAt = :updatedAt",
-    );
-  });
+    )
+  })
 
   void it("should return an ReservedFieldError if the aggregate contains a reserved field", async () => {
-    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>();
+    const sendMock = mock.fn<(args: { input: UpdateItemCommandInput }) => Promise<any>>()
 
     const persist = persistAggregateDynamoDB(
       {
         send: sendMock,
       } as any,
       "test-aggregates-table",
-    );
+    )
 
-    const id = ulid() as ULID;
-    const updatedAt = new Date();
-    const actor = `some-actor:${randomUUID()}`;
+    const id = ulid() as ULID
+    const updatedAt = new Date()
+    const actor = `some-actor:${randomUUID()}`
 
     await assert.rejects(
       async () =>
@@ -218,9 +218,9 @@ void describe("persistAggregateDynamoDB()", () => {
           version: 1,
         }),
       (error) => {
-        assert.match((error as Error).message, /version/);
-        return true;
+        assert.match((error as Error).message, /version/)
+        return true
       },
-    );
-  });
-});
+    )
+  })
+})

@@ -1,22 +1,22 @@
-import type { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import type { DynamoDBClient } from "@aws-sdk/client-dynamodb"
 import {
   BillingMode,
   CreateTableCommand,
   KeyType,
   ProjectionType,
   ScalarAttributeType,
-} from "@aws-sdk/client-dynamodb";
-import { ulid } from "ulidx";
+} from "@aws-sdk/client-dynamodb"
+import { ulid } from "ulidx"
 
 export const createTestTables = async (
   db: DynamoDBClient,
 ): Promise<{
-  eventsTableName: string;
-  blogPostsTableName: string;
+  eventsTableName: string
+  blogPostsTableName: string
 }> => {
-  const prefix = `aws-dynamodb-es-cqrs-${ulid()}`;
-  const eventsTableName = `${prefix}-events`;
-  const blogPostsTableName = `${prefix}-blog-posts`;
+  const prefix = `aws-dynamodb-es-cqrs-${ulid()}`
+  const eventsTableName = `${prefix}-events`
+  const blogPostsTableName = `${prefix}-blog-posts`
   // Create the events table
   await db.send(
     new CreateTableCommand({
@@ -65,7 +65,7 @@ export const createTestTables = async (
         },
       ],
     }),
-  );
+  )
   // Create the blog post aggregate table
   await db.send(
     new CreateTableCommand({
@@ -84,10 +84,10 @@ export const createTestTables = async (
       ],
       BillingMode: BillingMode.PAY_PER_REQUEST,
     }),
-  );
+  )
 
   return {
     eventsTableName,
     blogPostsTableName,
-  };
-};
+  }
+}

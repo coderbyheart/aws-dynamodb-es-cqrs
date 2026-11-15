@@ -1,12 +1,12 @@
-import type { AggregateEvent } from "#event/AggregateEvent.ts";
-import { type DynamoDBClient, paginateQuery } from "@aws-sdk/client-dynamodb";
-import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { ListAggregateEventsFn } from "../ListAggregateEventsFn.ts";
+import type { AggregateEvent } from "#event/AggregateEvent.ts"
+import { type DynamoDBClient, paginateQuery } from "@aws-sdk/client-dynamodb"
+import { unmarshall } from "@aws-sdk/util-dynamodb"
+import type { ListAggregateEventsFn } from "../ListAggregateEventsFn.ts"
 
 export const listAggregateEventsDynamoDB =
   (db: DynamoDBClient, TableName: string): ListAggregateEventsFn =>
   async (aggregateId) => {
-    const list: Array<AggregateEvent> = [];
+    const list: Array<AggregateEvent> = []
 
     for await (const page of paginateQuery(
       {
@@ -26,10 +26,10 @@ export const listAggregateEventsDynamoDB =
       },
     )) {
       for (const item of page.Items ?? []) {
-        const { eventTs, ...rest } = unmarshall(item);
-        void eventTs;
-        list.push(rest as AggregateEvent);
+        const { eventTs, ...rest } = unmarshall(item)
+        void eventTs
+        list.push(rest as AggregateEvent)
       }
     }
-    return list;
-  };
+    return list
+  }
