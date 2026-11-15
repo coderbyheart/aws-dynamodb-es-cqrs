@@ -1,10 +1,10 @@
-import type { AggregateEvent } from "./AggregateEvent.ts";
+import type { AggregateEvent } from "./AggregateEvent.ts"
 
 export const isAggregateEvent = (event: unknown): event is AggregateEvent => {
   if (typeof event !== "object" || event === null) {
-    return false;
+    return false
   }
-  const e = event as AggregateEvent;
+  const e = event as AggregateEvent
   return (
     typeof e.eventId === "string" &&
     typeof e.eventName === "string" &&
@@ -12,5 +12,5 @@ export const isAggregateEvent = (event: unknown): event is AggregateEvent => {
     typeof e.aggregateId === "string" &&
     typeof e.aggregateVersion === "number" &&
     typeof e.actorId === "string"
-  );
-};
+  )
+}

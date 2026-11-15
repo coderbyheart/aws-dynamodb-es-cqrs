@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
-import { extractEventsFromDynamoDBEvent } from "./extractEventsFromDynamoDBEvent.ts";
+import assert from "node:assert/strict"
+import { describe, it } from "node:test"
+import { extractEventsFromDynamoDBEvent } from "./extractEventsFromDynamoDBEvent.ts"
 
 void describe("extractEventsFromDynamoDBEvent()", () => {
   void it("should extract events", () => {
@@ -71,6 +71,6 @@ void describe("extractEventsFromDynamoDBEvent()", () => {
           eventTs: "2025-08-03T22:13:01.022Z",
         },
       ],
-    );
-  });
-});
+    )
+  })
+})

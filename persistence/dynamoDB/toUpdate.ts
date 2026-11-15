@@ -1,9 +1,9 @@
-import type { AggregateMeta } from "#aggregate/AggregateMeta.ts";
-import { RemoveAttribute } from "#persistence/PersistAggregateFn.ts";
-import { type UpdateItemCommandInput } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import type { AggregateMeta } from "#aggregate/AggregateMeta.ts"
+import { RemoveAttribute } from "#persistence/PersistAggregateFn.ts"
+import { type UpdateItemCommandInput } from "@aws-sdk/client-dynamodb"
+import { marshall } from "@aws-sdk/util-dynamodb"
 
-export const reservedFields = new Set<string>(["version", "actorId", "aggregateId", "updatedAt"]);
+export const reservedFields = new Set<string>(["version", "actorId", "aggregateId", "updatedAt"])
 
 export const toUpdate = (
   {
@@ -15,7 +15,7 @@ export const toUpdate = (
   // Check if the attributes contain any reserved fields
   for (const field of Object.keys(attributes)) {
     if (reservedFields.has(field)) {
-      throw new TypeError(`Field "${field}" is reserved and cannot be used.`);
+      throw new TypeError(`Field "${field}" is reserved and cannot be used.`)
     }
   }
 
@@ -23,31 +23,31 @@ export const toUpdate = (
     ["version", version],
     ["actorId", actorId],
     ...Object.entries(attributes).filter(([, v]) => v !== undefined),
-  ]);
+  ])
 
   const updateArgs: UpdateItemCommandInput = {
     TableName: aggregateTableName,
     Key: marshall({ aggregateId: id }),
     ExpressionAttributeValues: {},
     ExpressionAttributeNames: {},
-  };
+  }
 
   if (version === 1) {
-    updateArgs.ConditionExpression = "attribute_not_exists(#aggregateId)";
+    updateArgs.ConditionExpression = "attribute_not_exists(#aggregateId)"
   } else {
-    updateArgs.ConditionExpression = "attribute_exists(#aggregateId) AND #version = :prevVersion";
-    updates.set("updatedAt", updatedAt!.toISOString());
+    updateArgs.ConditionExpression = "attribute_exists(#aggregateId) AND #version = :prevVersion"
+    updates.set("updatedAt", updatedAt!.toISOString())
   }
 
   let UpdateExpression = `SET ${Array.from(updates.entries())
     .filter(([, v]) => v !== RemoveAttribute)
     .map(([k]) => `#${k} = :${k}`)
-    .join(", ")}`;
+    .join(", ")}`
   const fieldsToRemove = Array.from(updates.entries())
     .filter(([, v]) => v === RemoveAttribute)
-    .map(([k]) => k);
+    .map(([k]) => k)
   if (fieldsToRemove.length > 0) {
-    UpdateExpression += ` REMOVE ${fieldsToRemove.map((f) => `#${f}`).join(", ")}`;
+    UpdateExpression += ` REMOVE ${fieldsToRemove.map((f) => `#${f}`).join(", ")}`
   }
 
   return {
@@ -71,5 +71,5 @@ export const toUpdate = (
       ...(version !== 1 ? { "#version": "version" } : {}),
     },
     UpdateExpression,
-  };
-};
+  }
+}
