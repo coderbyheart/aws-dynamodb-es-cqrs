@@ -3,7 +3,9 @@
   "compilerOptions": {
     "emitDeclarationOnly": true,
     "declaration": true,
-    "noEmit": false
+    "noEmit": false,
+    "rootDir": ".."
   },
-  "include": ["../aggregate", "../event", "../error", "../persistence"]
+  "include": ["../aggregate", "../event", "../error", "../persistence"],
+  "exclude": ["../**/*.spec.ts"]
 }
