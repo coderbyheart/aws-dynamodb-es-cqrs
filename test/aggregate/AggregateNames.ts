@@ -1,3 +1,3 @@
-export enum AggregateNames {
-	BlogPost = 'BlogPost',
-}
+export const AggregateNames = {
+  BlogPost: "BlogPost",
+} as const;

@@ -1,8 +1,8 @@
-import type { AggregateMeta } from '#aggregate/AggregateMeta.ts'
+import type { AggregateMeta } from "#aggregate/AggregateMeta.ts";
 
 export type BlogPostAggregate = {
-	$meta: AggregateMeta
-	authorId: string
-	title: string
-	isPublic?: boolean
-}
+  $meta: AggregateMeta;
+  authorId: string;
+  title: string;
+  isPublic?: boolean;
+};

@@ -1,9 +1,9 @@
-import type { AggregateMeta } from '../aggregate/AggregateMeta.ts'
+import type { AggregateMeta } from "../aggregate/AggregateMeta.ts";
 
-export type PersistAggregateFn<
-	A extends Record<string, unknown> & { $meta: AggregateMeta },
-> = (aggregate: A) => Promise<true>
+export type PersistAggregateFn<A extends Record<string, unknown> & { $meta: AggregateMeta }> = (
+  aggregate: A,
+) => Promise<true>;
 
 export const RemoveAttribute = {
-	brand: Symbol('RemoveAttribute'),
-}
+  brand: Symbol("RemoveAttribute"),
+};

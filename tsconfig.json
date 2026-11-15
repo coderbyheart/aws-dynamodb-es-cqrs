@@ -20,13 +20,13 @@
     "noUnusedLocals": true,
     "allowImportingTsExtensions": true,
     "customConditions": ["aws-dynamodb-es-cqrs-dev"],
-    "baseUrl": ".",
     "paths": {
-      "#aggregate/*": ["aggregate/*"],
-      "#event/*": ["event/*"],
-      "#persistence/*": ["persistence/*"],
-      "#error/*": ["error/*"]
-    }
+      "#aggregate/*": ["./aggregate/*"],
+      "#event/*": ["./event/*"],
+      "#persistence/*": ["./persistence/*"],
+      "#error/*": ["./error/*"]
+    },
+    "types": ["node"]
   },
   "include": [
     "aggregate/**/*",

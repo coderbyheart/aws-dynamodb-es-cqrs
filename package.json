@@ -2,6 +2,19 @@
   "name": "@coderbyheart/aws-dynamodb-es-cqrs",
   "version": "0.0.0-development",
   "description": "ES/CQRS using AWS DynamoDB",
+  "homepage": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs",
+  "bugs": {
+    "url": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs/issues"
+  },
+  "license": "MIT",
+  "author": "Markus Tacker <m@coderbyheart.com> | https://coderbyheart.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderbyheart/aws-dynamodb-es-cqrs.git"
+  },
+  "files": [
+    "npm"
+  ],
   "type": "module",
   "imports": {
     "#aggregate/*": {
@@ -55,56 +68,45 @@
       }
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/coderbyheart/aws-dynamodb-es-cqrs.git"
+  "publishConfig": {
+    "access": "public"
   },
-  "bugs": {
-    "url": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs/issues"
-  },
-  "homepage": "https://github.com/coderbyheart/aws-dynamodb-es-cqrs",
-  "author": "Markus Tacker <m@coderbyheart.com> | https://coderbyheart.com",
-  "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "test": "node --no-warnings --experimental-transform-types --conditions=aws-dynamodb-es-cqrs-dev --test \"!(node_modules)/**/*.spec.ts\"",
-    "test:watch": "node --no-warnings --experimental-transform-types --conditions=aws-dynamodb-es-cqrs-dev --test --watch \"!(node_modules)/**/*.spec.ts\"",
+    "test": "node --no-warnings --conditions=aws-dynamodb-es-cqrs-dev --test \"!(node_modules)/**/*.spec.ts\"",
+    "test:watch": "node --no-warnings --conditions=aws-dynamodb-es-cqrs-dev --test --watch \"!(node_modules)/**/*.spec.ts\"",
     "prepublishOnly": "node --experimental-strip-types ./.npm/compile.ts && npx tsc -P ./.npm/tsconfig.npm.json --outDir ./npm"
   },
-  "peerDependencies": {
-    "@bifravst/from-env": "3.0.2",
-    "ulidx": "2.4.1"
-  },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "3.895.0",
-    "@aws-sdk/util-dynamodb": "3.895.0",
-    "@babel/plugin-syntax-import-assertions": "7.27.1",
-    "@bifravst/cloudformation-helpers": "9.1.1",
-    "@bifravst/eslint-config-typescript": "6.4.4",
-    "@bifravst/prettier-config": "1.1.17",
-    "@commitlint/config-conventional": "19.8.1",
-    "@swc/core": "1.13.5",
+    "@aws-sdk/client-dynamodb": "3.1169.0",
+    "@aws-sdk/util-dynamodb": "3.996.9",
+    "@babel/plugin-syntax-import-assertions": "7.29.7",
+    "@bifravst/cloudformation-helpers": "10.0.3",
+    "@coderbyheart/oxlint-config": "1.0.0",
+    "@commitlint/config-conventional": "21.2.4",
+    "@swc/core": "1.16.22",
     "@types/aws-lambda": "8.10.164",
-    "@types/node": "24.5.2",
-    "commitlint": "19.8.1",
+    "@types/node": "26.6.6",
+    "commitlint": "21.2.4",
     "husky": "9.1.7",
-    "lint-staged": "16.2.0",
-    "typescript": "5.9.2"
+    "lint-staged": "17.6.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "1.93.0",
+    "typescript": "7.0.2"
   },
-  "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
+  "peerDependencies": {
+    "@bifravst/from-env": "4.0.1",
+    "ulidx": "2.4.1"
   },
   "lint-staged": {
     "*.ts": [
-      "prettier --write",
-      "eslint"
+      "oxfmt --write",
+      "oxlint --fix"
     ],
     "*.{md,json,yaml,yml}": [
-      "prettier --write"
+      "oxfmt --write"
     ]
   },
-  "prettier": "@bifravst/prettier-config",
   "release": {
     "branches": [
       "saga"
@@ -123,10 +125,8 @@
       ]
     ]
   },
-  "files": [
-    "npm"
-  ],
-  "publishConfig": {
-    "access": "public"
+  "engines": {
+    "node": ">=26.13.1 <27",
+    "npm": ">=12.2.2 <13"
   }
 }
